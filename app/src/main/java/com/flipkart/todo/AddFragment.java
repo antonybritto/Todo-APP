@@ -44,15 +44,12 @@ public class AddFragment extends Fragment {
             public void onClick(View v) {
                 String taskTitle = title.getText().toString();
                 String taskNotes = notes.getText().toString();
-                Task c = new Task();
-                c.title = taskTitle;
-                c.notes = taskNotes;
-                c.priority = priority.getSelectedItem().toString();
-
-                if(delegate != null) {
-                    delegate.addTask(c);
-                }
-
+                Task task = new Task();
+                task.title = taskTitle;
+                task.notes = taskNotes;
+                task.priority = priority.getSelectedItem().toString();
+                task.status = TaskStatus.pending;
+                TaskTable.insert(task);
                 FragmentManager manager = getFragmentManager();
                 manager.popBackStack();
             }

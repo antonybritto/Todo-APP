@@ -1,25 +1,40 @@
 package com.flipkart.todo;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
-import java.util.ArrayList;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by antony.britto on 11/12/15.
  */
 public class TaskAdapter extends BaseAdapter {
     Context context;
-    ArrayList<Task> tasks;
+    Map<String, OrderBy> sortPriority = null;
+    Map<String, String> attributeValuePair = null;
 
+
+
+    private static final String  TAG = "TaskAdapter";
     //LruCache<String, Bitmap> cache;
 
-    public TaskAdapter(Context context, ArrayList<Task> countries) {
+    public TaskAdapter(Context context,  Map<String, OrderBy> sortPriority, Map<String, String> attributeValuePair) {
         this.context = context;
-        this.tasks = countries;
+        this.sortPriority = new HashMap<String, OrderBy>();
+        this.attributeValuePair = new HashMap<String, String>();
+        if (sortPriority != null) {
+            this.sortPriority.putAll(sortPriority);
+        }
+        if (attributeValuePair != null) {
+            this.attributeValuePair.putAll(attributeValuePair);
+        }
+
         /*final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
         cache = new LruCache<String, Bitmap>(maxMemory/8){
             @Override
@@ -52,7 +67,9 @@ public class TaskAdapter extends BaseAdapter {
         } else {
             mainView = convertView;
         }
-        Task task = tasks.get(position);
+        Task task = TaskTable.getTask(position, sortPriority, attributeValuePair);
+
+        Log.i(TAG, position + " :" + task.toString());
 
 
         ViewHolder vh = (ViewHolder)mainView.getTag();
@@ -86,16 +103,24 @@ public class TaskAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        return position;
+        return Long.valueOf(TaskTable.getTask(position, sortPriority, attributeValuePair).getId());
     }
 
     @Override
     public Object getItem(int position) {
-        return tasks.get(position);
+        return TaskTable.getTask(position, sortPriority, attributeValuePair);
     }
 
     @Override
     public int getCount() {
-        return tasks.size();
+        return TaskTable.getCount(attributeValuePair);
+    }
+
+    public Map<String, OrderBy> getSortPriority() {
+        return sortPriority;
+    }
+
+    public void setSortPriority(Map<String, OrderBy> sortPriority) {
+        this.sortPriority = sortPriority;
     }
 }

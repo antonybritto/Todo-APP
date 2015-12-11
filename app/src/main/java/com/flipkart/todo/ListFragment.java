@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 /**
@@ -23,14 +24,13 @@ public class ListFragment extends Fragment implements AddTaskDelegate {
     Button button = null;
     ListView taskList;
     TaskAdapter adapter;
-    ArrayList<Task> tasks = new ArrayList<Task>();
 
     public ListFragment() {
 
     }
 
     public void addTask(Task c){
-        tasks.add(c);
+
     }
 
     @Override
@@ -39,7 +39,9 @@ public class ListFragment extends Fragment implements AddTaskDelegate {
         // Inflate the layout for this fragment
         View fragmentView =  inflater.inflate(R.layout.fragment_list, container, false);
         taskList = (ListView) fragmentView.findViewById(R.id.listView);
-        adapter = new TaskAdapter(getContext(), tasks);
+        HashMap<String, OrderBy> sortOrder = new HashMap<>();
+        sortOrder.put(TaskTable.PRIORITY, OrderBy.ASC);
+        adapter = new TaskAdapter(getContext(), sortOrder, null);
         taskList.setAdapter(adapter);
         registerForContextMenu(taskList);
 
@@ -67,7 +69,7 @@ public class ListFragment extends Fragment implements AddTaskDelegate {
         if(item.getItemId() == R.id.taskDeleteMenu){
             AdapterView.AdapterContextMenuInfo contextMenuInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
             int selectedPos = contextMenuInfo.position;
-            tasks.remove(selectedPos);
+            TaskTable.deleteById(adapter.getItemId(selectedPos));
             adapter.notifyDataSetChanged();
         }
         if(item.getItemId() == R.id.taskEditMenu){
