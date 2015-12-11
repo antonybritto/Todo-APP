@@ -5,6 +5,8 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="delete_country_menu_text">Delete Task</string>
     <string name="edit_country_menu_text">Edit Task</string>
+    <string name="add_task_button_text">Add Task</string>
+    <string name="no_tasks_message">No tasks created yet. Start adding...</string>
     <array name="priority">
         <item>P1</item>
         <item>P2</item>

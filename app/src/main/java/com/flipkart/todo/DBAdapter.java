@@ -14,9 +14,9 @@ public class DBAdapter extends SQLiteOpenHelper {
         super(context, //context
                 "todoapp.db", //database name
                 null, //cursor structure
-                4 //version
+                5 //version
         );
-        onCreate(getWritableDatabase());
+        TaskTable.init(getWritableDatabase(), getReadableDatabase());
     }
 
     @Override
@@ -26,7 +26,6 @@ public class DBAdapter extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        TaskTable.init(getWritableDatabase(), getReadableDatabase());
 
     }
 }
