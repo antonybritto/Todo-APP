@@ -3,6 +3,8 @@
 
 <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="delete_country_menu_text">Delete Task</string>
+    <string name="edit_country_menu_text">Edit Task</string>
     <array name="priority">
         <item>P1</item>
         <item>P2</item>

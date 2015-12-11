@@ -8,6 +8,10 @@ import android.util.Log;
 
 public class MainActivity extends AppCompatActivity {
 
+    public void addTask(){
+
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
             Log.i("test", "switch");
             FragmentTransaction trans = manager.beginTransaction();
             AddFragment addFrag = new AddFragment();
-            //addFrag.delegate = frag;
+            addFrag.delegate = frag;
             //trans.setCustomAnimations(R.anim.fade_in, R.anim.fade_out, R.anim.fade_in, R.anim.fade_out);
             trans.remove(frag);
             trans.add(R.id.mainLayout, addFrag, "AF");
