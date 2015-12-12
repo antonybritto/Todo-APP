@@ -1,4 +1,4 @@
-package com.flipkart.todo;
+package com.flipkart.todo.model;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

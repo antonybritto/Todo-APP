@@ -4,7 +4,6 @@ package com.flipkart.todo;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
@@ -15,6 +14,11 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
+
+import com.flipkart.todo.R;
+import com.flipkart.todo.Task;
+import com.flipkart.todo.TaskStatus;
+import com.flipkart.todo.model.TaskTable;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -30,6 +34,7 @@ public class AddFragment extends Fragment {
     Spinner priority = null;
     Button addBtn;
     Button cancelBtn;
+    Button deleteBtn;
     EditText dueDate;
     Date dueDateTime;
     static final int DATE_DIALOG_ID = 0;
@@ -82,6 +87,8 @@ public class AddFragment extends Fragment {
         View fragmentview = inflater.inflate(R.layout.fragment_add, container, false);
         addBtn = (Button) fragmentview.findViewById(R.id.add);
         cancelBtn = (Button) fragmentview.findViewById(R.id.cancel);
+        deleteBtn = (Button) fragmentview.findViewById(R.id.delete);
+        deleteBtn.setVisibility(View.INVISIBLE);
         title = (EditText) fragmentview.findViewById(R.id.title);
         notes = (EditText) fragmentview.findViewById(R.id.notes);
         priority = (Spinner) fragmentview.findViewById(R.id.priority);

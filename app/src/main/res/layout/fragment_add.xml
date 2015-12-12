@@ -60,24 +60,35 @@
         android:layout_height="wrap_content"
         android:text="ADD TASK"
         android:id="@+id/add"
-        android:layout_marginBottom="05dp"
-        android:layout_above="@+id/cancel"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:layout_above="@+id/delete" />
 
 
     <Button
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Cancel"
-        android:id="@+id/cancel"
-        android:layout_alignParentBottom="true"
+        android:text="Delete"
+        android:id="@+id/delete"
+        android:layout_above="@+id/cancel"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cancel"
+        android:id="@+id/cancel"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
 
 </RelativeLayout>

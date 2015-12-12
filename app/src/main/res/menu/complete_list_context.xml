@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/taskPendingMenu"
+        android:title="Move To Pending" />
+    <item android:id="@+id/taskDeleteMenu"
+        android:title="@string/delete_country_menu_text" />
+
+</menu>

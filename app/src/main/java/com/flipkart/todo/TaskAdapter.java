@@ -1,20 +1,18 @@
 package com.flipkart.todo;
 
 import android.app.AlertDialog;
-import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.database.DataSetObserver;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.CheckBox;
 import android.widget.CheckedTextView;
-import android.widget.CompoundButton;
 import android.widget.TextView;
+
+import com.flipkart.todo.model.TaskTable;
+import com.flipkart.todo.util.ToDoUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,8 +24,15 @@ public class TaskAdapter extends BaseAdapter {
     Context context;
     Map<String, OrderBy> sortPriority = null;
     Map<String, String> attributeValuePair = null;
+    boolean isListView = true;
 
+    public boolean isListView() {
+        return isListView;
+    }
 
+    public void setIsListView(boolean isListView) {
+        this.isListView = isListView;
+    }
 
     private static final String  TAG = "TaskAdapter";
 
@@ -69,10 +74,12 @@ public class TaskAdapter extends BaseAdapter {
         }
          final Task task = TaskTable.getTask(position, sortPriority, attributeValuePair);
 
-        Log.i(TAG, sortPriority.toString() + " : "+  position + " :" + task.toString());
+        Log.i(TAG, sortPriority.toString() + " : " + position + " :" + task.toString());
 
 
         ViewHolder vh = (ViewHolder)mainView.getTag();
+
+        final TaskStatus checkBoxActionStatus = isListView ? TaskStatus.completed : TaskStatus.pending;
 
         vh.checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,7 +90,7 @@ public class TaskAdapter extends BaseAdapter {
                     checkedTextView.setChecked(false);
 
                 }
-                    if (checkedTextView.isChecked() == false) {
+                if (checkedTextView.isChecked() == false) {
                     checkedTextView.setChecked(true);
 
                     DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
@@ -91,10 +98,10 @@ public class TaskAdapter extends BaseAdapter {
                         public void onClick(DialogInterface dialog, int which) {
                             switch (which) {
                                 case DialogInterface.BUTTON_POSITIVE:
-                                    task.setStatus(TaskStatus.completed);
+                                    task.setStatus(checkBoxActionStatus);
                                     TaskTable.update(task);
                                     checkedTextView.setChecked(false);
-                                     notifyDataSetChanged();
+                                    notifyDataSetChanged();
                                     break;
                                 case DialogInterface.BUTTON_NEGATIVE:
                                     checkedTextView.setChecked(false);
@@ -104,13 +111,13 @@ public class TaskAdapter extends BaseAdapter {
                         }
                     };
                     AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                    builder.setMessage("Are you sure?").setPositiveButton("Completed", dialogClickListener)
-                            .setNegativeButton("Not Completed", dialogClickListener).show();
+                    builder.setMessage("Moving " + task.getTitle() +" task to " + checkBoxActionStatus.name() + " state" ).setPositiveButton("OK", dialogClickListener)
+                            .setNegativeButton("Cancel", dialogClickListener).show();
                 }
             }
         });
-
         vh.checkBox.setChecked(false);
+
         vh.taskPriority.setText(task.priority);
         vh.title.setText(task.title);
         vh.dueDate.setText(ToDoUtils.getDateString(task.dueDate));

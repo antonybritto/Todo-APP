@@ -1,4 +1,4 @@
-package com.flipkart.todo;
+package com.flipkart.todo.Fragment;
 
 
 import android.content.Intent;
@@ -12,12 +12,21 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.flipkart.todo.Activity.MainActivity;
+import com.flipkart.todo.Activity.TaskDetailActivity;
+import com.flipkart.todo.OrderBy;
+import com.flipkart.todo.R;
+import com.flipkart.todo.Task;
+import com.flipkart.todo.TaskAdapter;
+import com.flipkart.todo.TaskFragmentList;
+import com.flipkart.todo.TaskStatus;
+import com.flipkart.todo.model.TaskTable;
 
 import java.util.HashMap;
 
@@ -25,7 +34,7 @@ import java.util.HashMap;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ListFragment extends Fragment implements AddTaskDelegate {
+public class ListFragment extends Fragment {
     ListView taskList;
     TaskAdapter adapter;
     Spinner sortSpinner;
@@ -36,8 +45,12 @@ public class ListFragment extends Fragment implements AddTaskDelegate {
 
     }
 
-    public void addTask(Task c){
 
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -67,9 +80,9 @@ public class ListFragment extends Fragment implements AddTaskDelegate {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(getActivity(), TaskDetailActivity.class);
-                intent.putExtra("CurrentItemId", adapter.getItemId(position));
-                intent.putExtra("SORT_ATTR", sortOrder.entrySet().iterator().next().getKey());
-                intent.putExtra("SORT_ORDER_BY", sortOrder.entrySet().iterator().next().getValue());
+                intent.putExtra("CurrentPosition", position);
+                intent.putExtra("SORT_ATTR", adapter.getSortPriority().entrySet().iterator().next().getKey());
+                intent.putExtra("SORT_ORDER_BY", adapter.getSortPriority().entrySet().iterator().next().getValue().name());
                 intent.putExtra("STATUS", attributeValirPair.get(TaskTable.STATUS));
                 startActivity(intent);
             }

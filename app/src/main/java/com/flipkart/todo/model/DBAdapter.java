@@ -1,9 +1,8 @@
-package com.flipkart.todo;
+package com.flipkart.todo.model;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 /**
  * Created by monish.kumar on 30/11/15.

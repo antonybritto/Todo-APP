@@ -8,5 +8,6 @@ public enum TaskFragmentList {
     EditTaskFragment,
     CompletedTaskFragment,
     RecycleBinFragment,
-    SettingsFragment
+    SettingsFragment,
+    ListFragment
 }

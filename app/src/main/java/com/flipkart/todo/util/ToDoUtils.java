@@ -1,4 +1,4 @@
-package com.flipkart.todo;
+package com.flipkart.todo.util;
 
 import java.util.Date;
 

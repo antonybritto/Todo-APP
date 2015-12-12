@@ -5,6 +5,10 @@
         <!--android:icon="@android:drawable/ic_menu_add"-->
         <!--android:id="@+id/addTaskMenu"/>-->
 
+    <item android:title="Home"
+        app:showAsAction="always"
+        android:id="@+id/home" />
+
     <item android:title="Completed Task"
         app:showAsAction="never"
         android:id="@+id/completedTaskMenu"/>

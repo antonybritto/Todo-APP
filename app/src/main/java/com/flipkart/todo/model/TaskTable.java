@@ -1,10 +1,14 @@
-package com.flipkart.todo;
+package com.flipkart.todo.model;
 
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.util.Log;
+
+import com.flipkart.todo.OrderBy;
+import com.flipkart.todo.Task;
+import com.flipkart.todo.TaskStatus;
 
 import java.util.ArrayList;
 import java.util.Date;

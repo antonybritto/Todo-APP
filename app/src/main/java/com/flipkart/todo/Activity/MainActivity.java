@@ -1,19 +1,30 @@
-package com.flipkart.todo;
+package com.flipkart.todo.Activity;
 
-import android.content.Intent;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
+
+import com.flipkart.todo.AddFragment;
+import com.flipkart.todo.Fragment.CompletedTaskFragment;
+import com.flipkart.todo.EditTaskFragment;
+import com.flipkart.todo.Fragment.ListFragment;
+import com.flipkart.todo.R;
+import com.flipkart.todo.TaskFragmentList;
+import com.flipkart.todo.model.TaskTable;
 
 public class MainActivity extends AppCompatActivity {
 
     public void addTask(){
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     @Override
@@ -47,8 +58,16 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         if (item.getItemId() == R.id.completedTaskMenu){
-
+            switchFragment(TaskFragmentList.CompletedTaskFragment, null);
         }
+
+        if(item.getItemId() == R.id.home){
+            while(getSupportFragmentManager().popBackStackImmediate()) {
+
+            }
+            loadListFragment();
+        }
+
         return super.onOptionsItemSelected(item);
     }
     public void switchFragment(TaskFragmentList taskFragmentList, Long itemId) {
@@ -76,10 +95,17 @@ public class MainActivity extends AppCompatActivity {
                     trans.addToBackStack("ADD_"+ taskFragmentList.name());
                     break;
                 case CompletedTaskFragment:
+                    CompletedTaskFragment completedTaskFragment = new CompletedTaskFragment();
+                    trans.remove(frag);
+                    trans.add(R.id.mainLayout, completedTaskFragment, taskFragmentList.name());
+                    trans.addToBackStack("ADD_"+ taskFragmentList.name());
                     break;
                 case RecycleBinFragment:
                     break;
                 case SettingsFragment:
+                    break;
+                case ListFragment:
+                    frag.onResume();
                     break;
             }
 

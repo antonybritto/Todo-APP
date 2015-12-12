@@ -2,7 +2,6 @@ package com.flipkart.todo;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.app.FragmentManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -15,8 +14,12 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.flipkart.todo.R;
+import com.flipkart.todo.Task;
+import com.flipkart.todo.TaskStatus;
+import com.flipkart.todo.model.TaskTable;
+
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -30,8 +33,19 @@ public class EditTaskFragment extends Fragment {
     EditText notes = null;
     Spinner priority = null;
 
+    boolean isDetailView = false;
+
+    public boolean isDetailView() {
+        return isDetailView;
+    }
+
+    public void setIsDetailView(boolean isDetailView) {
+        this.isDetailView = isDetailView;
+    }
+
     Button addBtn;
     Button cancelBtn;
+    Button deleteBtn;
     EditText dueDate;
     Date dueDateTime;
     static final int DATE_DIALOG_ID = 0;
@@ -97,6 +111,13 @@ public class EditTaskFragment extends Fragment {
         addBtn = (Button) fragmentview.findViewById(R.id.add);
         addBtn.setText("Edit Task");
         cancelBtn = (Button) fragmentview.findViewById(R.id.cancel);
+        deleteBtn = (Button) fragmentview.findViewById(R.id.delete);
+
+        if(isDetailView) {
+            cancelBtn.setVisibility(View.INVISIBLE);
+            deleteBtn.setVisibility(View.INVISIBLE);
+        }
+
         title = (EditText) fragmentview.findViewById(R.id.title);
         notes = (EditText) fragmentview.findViewById(R.id.notes);
         priority = (Spinner) fragmentview.findViewById(R.id.priority);
@@ -132,22 +153,35 @@ public class EditTaskFragment extends Fragment {
                 TaskTable.update(task);
                 Toast toast = Toast.makeText(getContext(), "Edited Task", Toast.LENGTH_SHORT);
                 toast.show();
+                if(!isDetailView) {
+                    android.support.v4.app.FragmentManager manager = getFragmentManager();
+                    manager.popBackStack();
+                }
+            }
+        });
+        dueDate.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                                             @Override
+                                             public void onFocusChange(View v, boolean hasFocus) {
+                                                 if (hasFocus) {
+                                                     showDialog(DATE_DIALOG_ID).show();
+                                                 }
+                                             }
+                                         }
+        );
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 android.support.v4.app.FragmentManager manager = getFragmentManager();
                 manager.popBackStack();
             }
         });
-        dueDate.setOnFocusChangeListener( new View.OnFocusChangeListener() {
-                                              @Override
-                                              public void onFocusChange(View v, boolean hasFocus) {
-                                                  if (hasFocus) {
-                                                      showDialog(DATE_DIALOG_ID).show();
-                                                  }
-                                              }
-                                          }
-        );
-        cancelBtn.setOnClickListener(new View.OnClickListener(){
+        deleteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                task.setStatus(TaskStatus.deleted);
+                TaskTable.update(task);
+                Toast toast = Toast.makeText(getContext(), "Task Deleted", Toast.LENGTH_SHORT);
+                toast.show();
                 android.support.v4.app.FragmentManager manager = getFragmentManager();
                 manager.popBackStack();
             }
