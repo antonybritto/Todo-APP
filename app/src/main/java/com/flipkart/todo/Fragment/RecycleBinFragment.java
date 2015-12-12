@@ -60,13 +60,8 @@ public class RecycleBinFragment extends Fragment {
         RelativeLayout layout = (RelativeLayout) fragmentView.findViewById(R.id.taskListLayout);
         // if no tasks then show
         if(total == 0) {
-            final TextView textView = new TextView(getContext());
-            textView.setText(R.string.no_tasks_message);
-            final RelativeLayout.LayoutParams params =
-                    new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT,
-                            RelativeLayout.LayoutParams.WRAP_CONTENT);
-            textView.setLayoutParams(params);
-            layout.addView(textView, params);
+            Toast toast = Toast.makeText(getContext(), "No Deleted Tasks", Toast.LENGTH_SHORT);
+            toast.show();
         }
 
 //        taskList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
