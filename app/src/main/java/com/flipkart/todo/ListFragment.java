@@ -1,6 +1,7 @@
 package com.flipkart.todo;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.ContextMenu;
@@ -14,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,9 +26,11 @@ import java.util.HashMap;
  * A simple {@link Fragment} subclass.
  */
 public class ListFragment extends Fragment implements AddTaskDelegate {
-    Button button = null;
     ListView taskList;
     TaskAdapter adapter;
+    Spinner sortSpinner;
+    HashMap<String, OrderBy> sortOrder = new HashMap<>();
+    HashMap<String, String> attributeValirPair = new HashMap<>();
 
     public ListFragment() {
 
@@ -37,15 +41,16 @@ public class ListFragment extends Fragment implements AddTaskDelegate {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         setHasOptionsMenu(true);
         // Inflate the layout for this fragment
         View fragmentView =  inflater.inflate(R.layout.fragment_list, container, false);
         taskList = (ListView) fragmentView.findViewById(R.id.listView);
-        HashMap<String, OrderBy> sortOrder = new HashMap<>();
-        sortOrder.put(TaskTable.PRIORITY, OrderBy.ASC);
-        Integer total = TaskTable.getCount(null);
+        sortSpinner = (Spinner) fragmentView.findViewById(R.id.sortSpinner);
+        sortOrder.put(TaskTable.DUE_DATE, OrderBy.DESC);
+        attributeValirPair.put(TaskTable.STATUS, TaskStatus.pending.name());
+        final Integer total = TaskTable.getCount(attributeValirPair);
         RelativeLayout layout = (RelativeLayout) fragmentView.findViewById(R.id.taskListLayout);
         // if no tasks then show
         if(total == 0) {
@@ -57,35 +62,72 @@ public class ListFragment extends Fragment implements AddTaskDelegate {
             textView.setLayoutParams(params);
             layout.addView(textView, params);
         }
-        adapter = new TaskAdapter(getContext(), sortOrder, null);
+
+        taskList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(getActivity(), TaskDetailActivity.class);
+                intent.putExtra("CurrentItemId", adapter.getItemId(position));
+                intent.putExtra("SORT_ATTR", sortOrder.entrySet().iterator().next().getKey());
+                intent.putExtra("SORT_ORDER_BY", sortOrder.entrySet().iterator().next().getValue());
+                intent.putExtra("STATUS", attributeValirPair.get(TaskTable.STATUS));
+                startActivity(intent);
+            }
+        });
+
+
+        sortSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                adapter.getSortPriority().clear();
+
+                switch(position){
+                    case 0:
+                        adapter.getSortPriority().put(TaskTable.DUE_DATE, OrderBy.DESC);
+                        break;
+                    case 1:
+                        adapter.getSortPriority().put(TaskTable.DUE_DATE, OrderBy.ASC);
+                        break;
+                    case 2:
+                        adapter.getSortPriority().put(TaskTable.DUE_DATE, OrderBy.DESC);
+                        break;
+                    case 3:
+                        adapter.getSortPriority().put(TaskTable.PRIORITY, OrderBy.ASC);
+                        break;
+                    case 4:
+                        adapter.getSortPriority().put(TaskTable.PRIORITY, OrderBy.DESC);
+                        break;
+                    case 5:
+                        adapter.getSortPriority().put(TaskTable.TITLE, OrderBy.DESC);
+                        break;
+                }
+               adapter.notifyDataSetInvalidated();adapter.notifyDataSetChanged();
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        adapter = new TaskAdapter(getContext(), sortOrder, attributeValirPair);
         taskList.setAdapter(adapter);
         registerForContextMenu(taskList);
-
-        /*button = (Button) fragmentView.findViewById(R.id.button);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                MainActivity main = (MainActivity) getActivity();
-                main.switchToAddFragment();
-            }
-        });*/
-
-
         return fragmentView;
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.taskListMenu) {
-            MainActivity ma = (MainActivity) getActivity();
-            ma.switchToAddFragment();
-        }
-        return super.onOptionsItemSelected(item);
+        MenuItem menuItem = menu.add(R.string.add_task_button_text);
+        menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                MainActivity ma = (MainActivity) getActivity();
+                ma.switchFragment(TaskFragmentList.AddFragment, null);
+                return true;
+            }
+        });
     }
 
     @Override
@@ -96,10 +138,13 @@ public class ListFragment extends Fragment implements AddTaskDelegate {
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
+
         if(item.getItemId() == R.id.taskDeleteMenu){
             AdapterView.AdapterContextMenuInfo contextMenuInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
             int selectedPos = contextMenuInfo.position;
-            TaskTable.deleteById(adapter.getItemId(selectedPos));
+            Task task = TaskTable.getTask(adapter.getItemId(selectedPos));
+            task.setStatus(TaskStatus.deleted);
+            TaskTable.update(task);
             adapter.notifyDataSetChanged();
             Toast toast = Toast.makeText(getContext(), "Deleted Task", Toast.LENGTH_SHORT);
             toast.show();
@@ -108,7 +153,7 @@ public class ListFragment extends Fragment implements AddTaskDelegate {
             AdapterView.AdapterContextMenuInfo contextMenuInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
             int selectedPos = contextMenuInfo.position;
             MainActivity main = (MainActivity) getActivity();
-            main.switchToAddFragment();
+            main.switchFragment(TaskFragmentList.EditTaskFragment, adapter.getItemId(selectedPos));
             //tasks.remove(selectedPos);
             //adapter.notifyDataSetChanged();
         }

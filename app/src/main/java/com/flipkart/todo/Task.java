@@ -3,7 +3,7 @@ package com.flipkart.todo;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.sql.Date;
+import java.util.Date;
 
 /**
  * Created by antony.britto on 28/11/15.
@@ -13,9 +13,9 @@ public class Task implements Parcelable {
     String title;
     String notes;
     String priority;
-    String dueDate;
-    String createdDate;
-    String lastModifiedDate;
+    Date dueDate;
+    Date createdDate;
+    Date lastModifiedDate;
     TaskStatus status;
 
     public static Parcelable.Creator<Task> CREATOR = new Parcelable.Creator<Task>() {
@@ -26,9 +26,9 @@ public class Task implements Parcelable {
             c.title = source.readString();
             c.notes = source.readString();
             c.priority = source.readString();
-            c.dueDate = source.readString();
-            c.createdDate = source.readString();
-            c.lastModifiedDate = source.readString();
+            c.dueDate = new Date(Long.valueOf(source.readString()));
+            c.createdDate = new Date(Long.valueOf(source.readString()));;
+            c.lastModifiedDate = new Date(Long.valueOf(source.readString()));;
             c.status = TaskStatus.valueOf(source.readString());
             return c;
         }
@@ -45,9 +45,9 @@ public class Task implements Parcelable {
         dest.writeString(title);
         dest.writeString(notes);
         dest.writeString(priority);
-        dest.writeString(dueDate);
-        dest.writeString(createdDate);
-        dest.writeString(lastModifiedDate);
+        dest.writeString(dueDate.toString());
+        dest.writeString(createdDate.toString());
+        dest.writeString(lastModifiedDate.toString());
         dest.writeString(status.name());
     }
 
@@ -81,27 +81,27 @@ public class Task implements Parcelable {
         this.priority = priority;
     }
 
-    public String getDueDate() {
+    public Date getDueDate() {
         return dueDate;
     }
 
-    public void setDueDate(String dueDate) {
+    public void setDueDate(Date dueDate) {
         this.dueDate = dueDate;
     }
 
-    public String getCreatedDate() {
+    public Date getCreatedDate() {
         return createdDate;
     }
 
-    public void setCreatedDate(String createdDate) {
+    public void setCreatedDate(Date createdDate) {
         this.createdDate = createdDate;
     }
 
-    public String getLastModifiedDate() {
+    public Date getLastModifiedDate() {
         return lastModifiedDate;
     }
 
-    public void setLastModifiedDate(String lastModifiedDate) {
+    public void setLastModifiedDate(Date lastModifiedDate) {
         this.lastModifiedDate = lastModifiedDate;
     }
 

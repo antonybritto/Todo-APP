@@ -1,11 +1,19 @@
 package com.flipkart.todo;
 
+import android.app.AlertDialog;
+import android.app.FragmentManager;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.database.DataSetObserver;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
+import android.widget.CheckedTextView;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import java.util.HashMap;
@@ -22,7 +30,6 @@ public class TaskAdapter extends BaseAdapter {
 
 
     private static final String  TAG = "TaskAdapter";
-    //LruCache<String, Bitmap> cache;
 
     public TaskAdapter(Context context,  Map<String, OrderBy> sortPriority, Map<String, String> attributeValuePair) {
         this.context = context;
@@ -34,20 +41,13 @@ public class TaskAdapter extends BaseAdapter {
         if (attributeValuePair != null) {
             this.attributeValuePair.putAll(attributeValuePair);
         }
-
-        /*final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
-        cache = new LruCache<String, Bitmap>(maxMemory/8){
-            @Override
-            protected int sizeOf(String key, Bitmap value) {
-                return value.getByteCount()/1024;
-            }
-        };*/
     }
 
     static class ViewHolder {
         TextView taskPriority;
         TextView title;
         TextView dueDate;
+        CheckedTextView checkBox;
     }
 
     @Override
@@ -57,47 +57,63 @@ public class TaskAdapter extends BaseAdapter {
             //Log.i("CounterAdapter", "getView(" + position + ")");
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             mainView = inflater.inflate(R.layout.task, null);
-
             ViewHolder vh = new ViewHolder();
             vh.taskPriority = (TextView)mainView.findViewById(R.id.priority);
             vh.title = (TextView)mainView.findViewById(R.id.title);
             vh.dueDate = (TextView)mainView.findViewById(R.id.duedate);
-
+            vh.checkBox = (CheckedTextView) mainView.findViewById(R.id.checkBox);
+            vh.checkBox.setChecked(false);
             mainView.setTag(vh);
         } else {
             mainView = convertView;
         }
-        Task task = TaskTable.getTask(position, sortPriority, attributeValuePair);
+         final Task task = TaskTable.getTask(position, sortPriority, attributeValuePair);
 
-        Log.i(TAG, position + " :" + task.toString());
+        Log.i(TAG, sortPriority.toString() + " : "+  position + " :" + task.toString());
 
 
         ViewHolder vh = (ViewHolder)mainView.getTag();
 
+        vh.checkBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final CheckedTextView checkedTextView = (CheckedTextView) v.findViewById(R.id.checkBox);
+
+                if (checkedTextView.isChecked() == true) {
+                    checkedTextView.setChecked(false);
+
+                }
+                    if (checkedTextView.isChecked() == false) {
+                    checkedTextView.setChecked(true);
+
+                    DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            switch (which) {
+                                case DialogInterface.BUTTON_POSITIVE:
+                                    task.setStatus(TaskStatus.completed);
+                                    TaskTable.update(task);
+                                    checkedTextView.setChecked(false);
+                                     notifyDataSetChanged();
+                                    break;
+                                case DialogInterface.BUTTON_NEGATIVE:
+                                    checkedTextView.setChecked(false);
+                                    notifyDataSetChanged();
+                                    break;
+                            }
+                        }
+                    };
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                    builder.setMessage("Are you sure?").setPositiveButton("Completed", dialogClickListener)
+                            .setNegativeButton("Not Completed", dialogClickListener).show();
+                }
+            }
+        });
+
+        vh.checkBox.setChecked(false);
         vh.taskPriority.setText(task.priority);
         vh.title.setText(task.title);
-        vh.dueDate.setText(task.dueDate);
-
-        /*String flagPath = "flags-32/" + country.title + ".png";
-
-        Bitmap image = cache.get(flagPath);
-        if(image == null) {
-            AssetManager manager = context.getAssets();
-            try {
-                InputStream instr = manager.open(flagPath);
-                Bitmap img = BitmapFactory.decodeStream(instr);
-                if(img != null) {
-                    cache.put(flagPath, img);
-                    vh.countryIV.setImageBitmap(img);
-                }
-            } catch (IOException e) {
-                vh.countryIV.setImageResource(R.drawable.android_logo);
-                e.printStackTrace();
-            }
-        } else {
-            vh.countryIV.setImageBitmap(image);
-        }*/
-
+        vh.dueDate.setText(ToDoUtils.getDateString(task.dueDate));
         return mainView;
     }
 
@@ -122,5 +138,13 @@ public class TaskAdapter extends BaseAdapter {
 
     public void setSortPriority(Map<String, OrderBy> sortPriority) {
         this.sortPriority = sortPriority;
+    }
+
+    public Map<String, String> getAttributeValuePair() {
+        return attributeValuePair;
+    }
+
+    public void setAttributeValuePair(Map<String, String> attributeValuePair) {
+        this.attributeValuePair = attributeValuePair;
     }
 }

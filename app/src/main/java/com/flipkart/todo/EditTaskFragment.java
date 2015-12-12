@@ -1,12 +1,11 @@
 package com.flipkart.todo;
 
-
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.FragmentManager;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,18 +15,21 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-
+import java.util.List;
 
 /**
- * A simple {@link Fragment} subclass.
+ * Created by monish.kumar on 12/12/15.
  */
-public class AddFragment extends Fragment {
+public class EditTaskFragment extends Fragment {
 
+    String TAG = "EditTaskFragment";
     EditText title = null;
     EditText notes = null;
     Spinner priority = null;
+
     Button addBtn;
     Button cancelBtn;
     EditText dueDate;
@@ -36,6 +38,18 @@ public class AddFragment extends Fragment {
     private int pYear;
     private int pMonth;
     private int pDay;
+    static List<String> priorityList;
+
+
+    Task task;
+
+    public Task getTask() {
+        return task;
+    }
+
+    public void setTask(Task task) {
+        this.task = task;
+    }
 
     private DatePickerDialog.OnDateSetListener pDateSetListener =
             new DatePickerDialog.OnDateSetListener() {
@@ -81,20 +95,23 @@ public class AddFragment extends Fragment {
         // Inflate the layout for this fragment
         View fragmentview = inflater.inflate(R.layout.fragment_add, container, false);
         addBtn = (Button) fragmentview.findViewById(R.id.add);
+        addBtn.setText("Edit Task");
         cancelBtn = (Button) fragmentview.findViewById(R.id.cancel);
         title = (EditText) fragmentview.findViewById(R.id.title);
         notes = (EditText) fragmentview.findViewById(R.id.notes);
         priority = (Spinner) fragmentview.findViewById(R.id.priority);
         dueDate = (EditText) fragmentview.findViewById(R.id.dueDate);
 
-        /** Get the current date */
-        final Calendar cal = Calendar.getInstance();
-        pYear = cal.get(Calendar.YEAR);
-        pMonth = cal.get(Calendar.MONTH);
-        pDay = cal.get(Calendar.DAY_OF_MONTH);
+        if (priorityList == null) {
+            priorityList = Arrays.asList((getResources().getStringArray(R.array.priority)));
+        }
+        title.setText(task.getTitle());
+        notes.setText(task.getNotes());
+        priority.setSelection(priorityList.indexOf(task.getPriority()));
 
-
-        /** Display the current date in the TextView */
+        pYear = task.getDueDate().getYear();
+        pMonth = task.getDueDate().getMonth();
+        pDay = task.getDueDate().getDate();
         dueDateTime = new Date() ;
         updateDisplay();
 
@@ -105,33 +122,33 @@ public class AddFragment extends Fragment {
             public void onClick(View v) {
                 String taskTitle = title.getText().toString();
                 String taskNotes = notes.getText().toString();
-                Task task = new Task();
                 task.title = taskTitle;
                 task.notes = taskNotes;
                 task.priority = priority.getSelectedItem().toString();
 //                task.dueDate = dueDate.getText().toString();
                 task.status = TaskStatus.pending;
                 task.dueDate = dueDateTime;
-                TaskTable.insert(task);
-                Toast toast = Toast.makeText(getContext(), "Added New Task", Toast.LENGTH_SHORT);
+                Log.i(TAG, task.toString());
+                TaskTable.update(task);
+                Toast toast = Toast.makeText(getContext(), "Edited Task", Toast.LENGTH_SHORT);
                 toast.show();
-                FragmentManager manager = getFragmentManager();
+                android.support.v4.app.FragmentManager manager = getFragmentManager();
                 manager.popBackStack();
             }
         });
         dueDate.setOnFocusChangeListener( new View.OnFocusChangeListener() {
                                               @Override
                                               public void onFocusChange(View v, boolean hasFocus) {
-                                                    if (hasFocus) {
-                                                        showDialog(DATE_DIALOG_ID).show();
-                                                    }
+                                                  if (hasFocus) {
+                                                      showDialog(DATE_DIALOG_ID).show();
+                                                  }
                                               }
                                           }
         );
         cancelBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                FragmentManager manager = getFragmentManager();
+                android.support.v4.app.FragmentManager manager = getFragmentManager();
                 manager.popBackStack();
             }
         });
