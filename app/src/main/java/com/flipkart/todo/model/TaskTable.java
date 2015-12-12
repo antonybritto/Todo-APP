@@ -67,7 +67,7 @@ public class TaskTable {
             row.put(CREATED_DATE, new Date().getTime());
             row.put(LAST_MODIFIED, new Date().getTime());
             writeabledB.insertOrThrow(TABLE_NAME, "", row);
-            Log.i(TAG, "Successfully inserted " + task.toString());
+//            Log.i(TAG, "Successfully inserted " + task.toString());
         } catch (Exception e) {
             Log.e(TAG, e.getMessage());
         }

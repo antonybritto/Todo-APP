@@ -17,7 +17,7 @@ public class Task implements Parcelable {
     Date createdDate;
     Date lastModifiedDate;
     TaskStatus status;
-    
+
 
     public static Parcelable.Creator<Task> CREATOR = new Parcelable.Creator<Task>() {
         @Override

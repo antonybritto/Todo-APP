@@ -1,5 +1,6 @@
 package com.flipkart.todo.Activity;
 
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -12,16 +13,15 @@ import com.flipkart.todo.AddFragment;
 import com.flipkart.todo.Fragment.CompletedTaskFragment;
 import com.flipkart.todo.EditTaskFragment;
 import com.flipkart.todo.Fragment.ListFragment;
+import com.flipkart.todo.Fragment.RecycleBinFragment;
+import com.flipkart.todo.Fragment.SettingsFragment;
 import com.flipkart.todo.R;
 import com.flipkart.todo.TaskFragmentList;
 import com.flipkart.todo.model.TaskTable;
 
 public class MainActivity extends AppCompatActivity {
 
-    public void addTask(){
-
-    }
-
+    String TAG = "MainActivity";
     @Override
     protected void onResume() {
         super.onResume();
@@ -39,11 +39,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void loadListFragment() {
         FragmentManager manager = getSupportFragmentManager();
-        ListFragment fragment = (ListFragment) manager.findFragmentByTag("LF");
+        ListFragment fragment = (ListFragment) manager.findFragmentByTag(TaskFragmentList.ListFragment.name());
         if(fragment == null) {
             fragment = new ListFragment();
             FragmentTransaction transaction = manager.beginTransaction();
-            transaction.add(R.id.mainLayout, fragment, "LF");
+            transaction.add(R.id.mainLayout, fragment, TaskFragmentList.ListFragment.name());
             transaction.commit();
         }
     }
@@ -61,55 +61,69 @@ public class MainActivity extends AppCompatActivity {
             switchFragment(TaskFragmentList.CompletedTaskFragment, null);
         }
 
-        if(item.getItemId() == R.id.home){
-            while(getSupportFragmentManager().popBackStackImmediate()) {
+        if (item.getItemId() == R.id.trash){
+            switchFragment(TaskFragmentList.RecycleBinFragment, null);
+        }
+        if (item.getItemId() == R.id.settings){
+            switchFragment(TaskFragmentList.SettingsFragment, null);
+        }
 
-            }
-            loadListFragment();
+        if(item.getItemId() == R.id.home){
+            switchFragment(TaskFragmentList.ListFragment, null);
         }
 
         return super.onOptionsItemSelected(item);
     }
     public void switchFragment(TaskFragmentList taskFragmentList, Long itemId) {
         FragmentManager manager = getSupportFragmentManager();
-        ListFragment frag = (ListFragment) manager.findFragmentByTag("LF");
-        Log.i("test", "switch");
+        Fragment frag = null;
+        if(manager.getBackStackEntryCount()>0){
+            FragmentManager.BackStackEntry backEntry = manager.getBackStackEntryAt(manager.getBackStackEntryCount()-1);
+            String str=backEntry.getName();
+            frag= manager.findFragmentByTag(str);
+        } else {
+            frag = (ListFragment) manager.findFragmentByTag(TaskFragmentList.ListFragment.name());
+        }
+
         if(frag != null) {
             Log.i("test", "switch");
             FragmentTransaction trans = manager.beginTransaction();
+            trans.remove(frag);
             switch (taskFragmentList){
                 case AddFragment:
-                    AddFragment addFrag = new AddFragment();
                     //trans.setCustomAnimations(R.anim.fade_in, R.anim.fade_out, R.anim.fade_in, R.anim.fade_out);
-                    trans.remove(frag);
-                    trans.add(R.id.mainLayout, addFrag, taskFragmentList.name());
-                    trans.addToBackStack("ADD_" + taskFragmentList.name());
-
+                    trans.add(R.id.mainLayout, new AddFragment(), taskFragmentList.name());
                     break;
                 case EditTaskFragment:
                     EditTaskFragment editTaskFragment = new EditTaskFragment();
                     editTaskFragment.setTask(TaskTable.getTask(itemId));
                     //trans.setCustomAnimations(R.anim.fade_in, R.anim.fade_out, R.anim.fade_in, R.anim.fade_out);
-                    trans.remove(frag);
                     trans.add(R.id.mainLayout, editTaskFragment, taskFragmentList.name());
-                    trans.addToBackStack("ADD_"+ taskFragmentList.name());
                     break;
                 case CompletedTaskFragment:
-                    CompletedTaskFragment completedTaskFragment = new CompletedTaskFragment();
-                    trans.remove(frag);
-                    trans.add(R.id.mainLayout, completedTaskFragment, taskFragmentList.name());
-                    trans.addToBackStack("ADD_"+ taskFragmentList.name());
+                    trans.add(R.id.mainLayout, new CompletedTaskFragment(), taskFragmentList.name());
                     break;
                 case RecycleBinFragment:
+                    trans.add(R.id.mainLayout, new RecycleBinFragment(), taskFragmentList.name());
                     break;
                 case SettingsFragment:
+                    trans.add(R.id.mainLayout, new SettingsFragment(), taskFragmentList.name());
                     break;
                 case ListFragment:
-                    frag.onResume();
+                    trans.add(R.id.mainLayout, new ListFragment(), taskFragmentList.name());
                     break;
             }
-
+            trans.addToBackStack(taskFragmentList.name());
             trans.commit();
+        } else {
+            Log.i(TAG, "fragment is null");
+            loadListFragment();
+        }
+    }
+
+    private void moveToTopPage(){
+        while(getSupportFragmentManager().popBackStackImmediate()){
+
         }
     }
 }

@@ -24,15 +24,18 @@ public class TaskAdapter extends BaseAdapter {
     Context context;
     Map<String, OrderBy> sortPriority = null;
     Map<String, String> attributeValuePair = null;
-    boolean isListView = true;
 
-    public boolean isListView() {
-        return isListView;
+    public TaskStatus getCheckBoxActionStatus() {
+        return checkBoxActionStatus;
     }
 
-    public void setIsListView(boolean isListView) {
-        this.isListView = isListView;
+    public void setCheckBoxActionStatus(TaskStatus checkBoxActionStatus) {
+        this.checkBoxActionStatus = checkBoxActionStatus;
     }
+
+    TaskStatus checkBoxActionStatus;
+
+
 
     private static final String  TAG = "TaskAdapter";
 
@@ -74,12 +77,10 @@ public class TaskAdapter extends BaseAdapter {
         }
          final Task task = TaskTable.getTask(position, sortPriority, attributeValuePair);
 
-        Log.i(TAG, sortPriority.toString() + " : " + position + " :" + task.toString());
+//        Log.i(TAG, sortPriority.toString() + " : " + position + " :" + task.toString());
 
 
         ViewHolder vh = (ViewHolder)mainView.getTag();
-
-        final TaskStatus checkBoxActionStatus = isListView ? TaskStatus.completed : TaskStatus.pending;
 
         vh.checkBox.setOnClickListener(new View.OnClickListener() {
             @Override

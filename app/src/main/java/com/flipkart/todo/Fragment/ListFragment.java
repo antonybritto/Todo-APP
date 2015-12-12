@@ -27,6 +27,7 @@ import com.flipkart.todo.TaskAdapter;
 import com.flipkart.todo.TaskFragmentList;
 import com.flipkart.todo.TaskStatus;
 import com.flipkart.todo.model.TaskTable;
+import com.flipkart.todo.util.ToDoUtils;
 
 import java.util.HashMap;
 
@@ -87,44 +88,45 @@ public class ListFragment extends Fragment {
                 startActivity(intent);
             }
         });
-
-
         sortSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                adapter.getSortPriority().clear();
+                if (adapter != null && adapter.getSortPriority() != null) {
+                    adapter.getSortPriority().clear();
 
-                switch(position){
-                    case 0:
-                        adapter.getSortPriority().put(TaskTable.DUE_DATE, OrderBy.DESC);
-                        break;
-                    case 1:
-                        adapter.getSortPriority().put(TaskTable.DUE_DATE, OrderBy.ASC);
-                        break;
-                    case 2:
-                        adapter.getSortPriority().put(TaskTable.DUE_DATE, OrderBy.DESC);
-                        break;
-                    case 3:
-                        adapter.getSortPriority().put(TaskTable.PRIORITY, OrderBy.ASC);
-                        break;
-                    case 4:
-                        adapter.getSortPriority().put(TaskTable.PRIORITY, OrderBy.DESC);
-                        break;
-                    case 5:
-                        adapter.getSortPriority().put(TaskTable.TITLE, OrderBy.DESC);
-                        break;
+                    switch (position) {
+                        case 0:
+                            adapter.getSortPriority().put(TaskTable.DUE_DATE, OrderBy.DESC);
+                            break;
+                        case 1:
+                            adapter.getSortPriority().put(TaskTable.DUE_DATE, OrderBy.ASC);
+                            break;
+                        case 2:
+                            adapter.getSortPriority().put(TaskTable.DUE_DATE, OrderBy.DESC);
+                            break;
+                        case 3:
+                            adapter.getSortPriority().put(TaskTable.PRIORITY, OrderBy.ASC);
+                            break;
+                        case 4:
+                            adapter.getSortPriority().put(TaskTable.PRIORITY, OrderBy.DESC);
+                            break;
+                        case 5:
+                            adapter.getSortPriority().put(TaskTable.TITLE, OrderBy.DESC);
+                            break;
+                    }
+                    adapter.notifyDataSetInvalidated();
+                    adapter.notifyDataSetChanged();
                 }
-               adapter.notifyDataSetInvalidated();adapter.notifyDataSetChanged();
-
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-
             }
         });
+//        ToDoUtils.setSpinnerOnClickListener(sortSpinner, adapter);
         adapter = new TaskAdapter(getContext(), sortOrder, attributeValirPair);
         taskList.setAdapter(adapter);
+        adapter.setCheckBoxActionStatus(TaskStatus.completed);
         registerForContextMenu(taskList);
         return fragmentView;
     }
