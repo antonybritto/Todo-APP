@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,11 +17,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.flipkart.todo.Activity.MainActivity;
 import com.flipkart.todo.Activity.TaskDetailActivity;
 import com.flipkart.todo.OrderBy;
 import com.flipkart.todo.R;
 import com.flipkart.todo.Task;
 import com.flipkart.todo.TaskAdapter;
+import com.flipkart.todo.TaskFragmentList;
 import com.flipkart.todo.TaskStatus;
 import com.flipkart.todo.model.TaskTable;
 import com.flipkart.todo.util.ToDoUtils;
@@ -120,6 +123,29 @@ public class RecycleBinFragment extends Fragment {
         taskList.setAdapter(adapter);
         registerForContextMenu(taskList);
         return fragmentView;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        MenuItem menuItem = menu.add("Clear Recycle Bin");
+        menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                TaskTable.update(
+                        new HashMap<String, String>() {{
+                            put(TaskTable.STATUS, TaskStatus.deleted.name());
+                        }},
+                        new HashMap<String, String>() {{
+                            put(TaskTable.STATUS, TaskStatus.destroyed.name());
+                        }}
+                );
+                Toast toast = Toast.makeText(getContext(), "Cleared All Tasks", Toast.LENGTH_SHORT);
+                toast.show();
+                adapter.notifyDataSetChanged();
+                return true;
+            }
+        });
     }
 
     @Override

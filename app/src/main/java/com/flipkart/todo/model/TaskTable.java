@@ -219,7 +219,22 @@ public class TaskTable {
                     put(ID, String.valueOf(task.getId()));
                 }}),
                 null
-                );
+        );
+
+
+    }
+
+    public static int update(HashMap<String, String> whereClause,HashMap<String, String> columnValurPair) {
+        ContentValues row = new ContentValues();
+        for (Map.Entry<String, String> entry : columnValurPair.entrySet()) {
+            row.put(entry.getKey(), entry.getValue());
+        }
+        return writeabledB.update(
+                TABLE_NAME,
+                row,
+                appendWhere(whereClause),
+                null
+        );
 
 
     }
