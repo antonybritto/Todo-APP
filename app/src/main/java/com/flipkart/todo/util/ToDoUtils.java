@@ -8,6 +8,7 @@ import com.flipkart.todo.OrderBy;
 import com.flipkart.todo.TaskAdapter;
 import com.flipkart.todo.model.TaskTable;
 
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -19,11 +20,17 @@ public class ToDoUtils {
 
         StringBuilder stringBuilder = new StringBuilder();
         if(timeStamp != null) {
+            Calendar calendar = Calendar.getInstance();
             Date date = new java.sql.Date(timeStamp.getTime());
-            stringBuilder
-                    .append(date.getDate()).append("/")
-                    .append(date.getMonth() + 1).append("/")
-                    .append(date.getYear()).append(" ").toString();
+            calendar.setTime(date);
+            stringBuilder.append(calendar.get(Calendar.DAY_OF_MONTH)).append("/")
+                    .append(calendar.get(Calendar.MONTH) + 1).append("/")
+                    .append(calendar.get(Calendar.YEAR)).append(" ")
+                    .append(calendar.get(Calendar.HOUR_OF_DAY))
+                    .append(":")
+                    .append(calendar.get(Calendar.MINUTE))
+                    .append(" ")
+                    .toString();
         }
         return stringBuilder.toString();
     }

@@ -30,7 +30,7 @@
 
     <EditText
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:inputType="date"
         android:hint="Due Date"
         android:ems="10"
@@ -41,14 +41,30 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:inputType="time"
+        android:hint="Due Time"
+        android:ems="10"
+        android:layout_below="@id/dueDate"
+        android:id="@+id/dueTime"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+
     <Spinner
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/priority"
         android:entries="@array/priority"
         android:spinnerMode="dialog"
-        android:minHeight="30dp"
-        android:layout_marginBottom="60dp"
+        android:minHeight="50dp"
+        android:layout_below="@id/dueTime"
+        android:textAlignment="center"
         android:layout_above="@+id/add"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"

@@ -3,6 +3,7 @@ package com.flipkart.todo;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -13,6 +14,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.flipkart.todo.R;
@@ -36,11 +38,16 @@ public class AddFragment extends Fragment {
     Button cancelBtn;
     Button deleteBtn;
     EditText dueDate;
+    EditText dueTime;
     Date dueDateTime;
     static final int DATE_DIALOG_ID = 0;
+    static final int TIME_DIALOG_ID = 1;
     private int pYear;
     private int pMonth;
     private int pDay;
+
+    private int pHour;
+    private int pMin;
 
     private DatePickerDialog.OnDateSetListener pDateSetListener =
             new DatePickerDialog.OnDateSetListener() {
@@ -51,7 +58,16 @@ public class AddFragment extends Fragment {
                     pMonth = monthOfYear;
                     pDay = dayOfMonth;
                     updateDisplay();
-                    displayToast();
+                }
+            };
+
+    private TimePickerDialog.OnTimeSetListener pTimeSetListener =
+            new TimePickerDialog.OnTimeSetListener() {
+                @Override
+                public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                    pHour = hourOfDay;
+                    pMin = minute;
+                    updateTimeDisplay();
                 }
             };
 
@@ -68,9 +84,18 @@ public class AddFragment extends Fragment {
         dueDateTime.setYear(pYear);
     }
 
-    private void displayToast() {
+    private void updateTimeDisplay() {
+        dueTime.setText(
+                new StringBuilder()
+                        // Month is 0 based so add 1
+                        .append(pHour).append(":")
+                        .append(pMin).append(" "));
 
+        dueDateTime.setHours(pHour);
+        dueDateTime.setMinutes(pMin);
     }
+
+
 
     public EditText getDueDate() {
         return dueDate;
@@ -93,6 +118,7 @@ public class AddFragment extends Fragment {
         notes = (EditText) fragmentview.findViewById(R.id.notes);
         priority = (Spinner) fragmentview.findViewById(R.id.priority);
         dueDate = (EditText) fragmentview.findViewById(R.id.dueDate);
+        dueTime = (EditText) fragmentview.findViewById(R.id.dueTime);
 
         /** Get the current date */
         final Calendar cal = Calendar.getInstance();
@@ -100,10 +126,16 @@ public class AddFragment extends Fragment {
         pMonth = cal.get(Calendar.MONTH);
         pDay = cal.get(Calendar.DAY_OF_MONTH);
 
+        pHour = cal.get(Calendar.HOUR_OF_DAY);
+        pMin = cal.get(Calendar.MINUTE);
+
+
 
         /** Display the current date in the TextView */
         dueDateTime = new Date() ;
         updateDisplay();
+        updateTimeDisplay();
+
 
 
 
@@ -126,15 +158,24 @@ public class AddFragment extends Fragment {
                 manager.popBackStack();
             }
         });
-        dueDate.setOnFocusChangeListener( new View.OnFocusChangeListener() {
-                                              @Override
-                                              public void onFocusChange(View v, boolean hasFocus) {
-                                                    if (hasFocus) {
-                                                        showDialog(DATE_DIALOG_ID).show();
-                                                    }
-                                              }
-                                          }
+        dueDate.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                                             @Override
+                                             public void onFocusChange(View v, boolean hasFocus) {
+                                                 if (hasFocus) {
+                                                     showDialog(DATE_DIALOG_ID).show();
+                                                 }
+                                             }
+                                         }
         );
+
+        dueTime.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    showDialog(TIME_DIALOG_ID).show();
+                }
+            }
+        });
         cancelBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
@@ -151,6 +192,12 @@ public class AddFragment extends Fragment {
                 return new DatePickerDialog(this.getContext(),
                         pDateSetListener,
                         pYear, pMonth, pDay);
+            case TIME_DIALOG_ID:
+                return new TimePickerDialog(this.getContext(),
+                        pTimeSetListener,
+                        pHour,
+                        pMin,
+                        false);
         }
         return null;
     }
