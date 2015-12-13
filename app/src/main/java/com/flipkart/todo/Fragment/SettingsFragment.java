@@ -55,14 +55,7 @@ public class SettingsFragment extends Fragment {
                         public void onClick(DialogInterface dialog, int which) {
                             switch (which) {
                                 case DialogInterface.BUTTON_POSITIVE:
-                                    TaskTable.update(
-                                            new HashMap<String, String>() {{
-                                                put(TaskTable.STATUS, TaskStatus.deleted.name());
-                                            }},
-                                            new HashMap<String, String>() {{
-                                                put(TaskTable.STATUS, TaskStatus.destroyed.name());
-                                            }}
-                                    );
+                                    TaskTable.delete(TaskTable.STATUS, TaskStatus.deleted.name());
                                     Toast toast = Toast.makeText(getContext(), "Cleared All Tasks", Toast.LENGTH_SHORT);
                                     toast.show();
                                     checkedTextView.setChecked(false);
@@ -94,14 +87,7 @@ public class SettingsFragment extends Fragment {
                         public void onClick(DialogInterface dialog, int which) {
                             switch (which) {
                                 case DialogInterface.BUTTON_POSITIVE:
-                                    TaskTable.update(
-                                            new HashMap<String, String>() {{
-                                                put(TaskTable.STATUS, TaskStatus.completed.name());
-                                            }},
-                                            new HashMap<String, String>() {{
-                                                put(TaskTable.STATUS, TaskStatus.destroyed.name());
-                                            }}
-                                    );
+                                    TaskTable.delete(TaskTable.STATUS,TaskStatus.completed.name());
                                     Toast toast = Toast.makeText(getContext(), "Cleared All Tasks", Toast.LENGTH_SHORT);
                                     toast.show();
                                     checkedTextView.setChecked(false);

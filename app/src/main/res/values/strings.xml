@@ -16,7 +16,7 @@
     </array>
 
     <array name="sortSequence">
-        <item>Sort</item>
+        <item>Sort By</item>
         <item>Farthest DueDate</item>
         <item>Earliest DueDate</item>
         <item>Least Priority</item>

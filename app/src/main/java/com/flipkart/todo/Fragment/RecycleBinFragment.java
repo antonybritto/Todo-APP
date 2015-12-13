@@ -127,14 +127,8 @@ public class RecycleBinFragment extends Fragment {
         menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                TaskTable.update(
-                        new HashMap<String, String>() {{
-                            put(TaskTable.STATUS, TaskStatus.deleted.name());
-                        }},
-                        new HashMap<String, String>() {{
-                            put(TaskTable.STATUS, TaskStatus.destroyed.name());
-                        }}
-                );
+
+                TaskTable.delete(TaskTable.STATUS,TaskStatus.deleted.name());
                 Toast toast = Toast.makeText(getContext(), "Cleared All Tasks", Toast.LENGTH_SHORT);
                 toast.show();
                 adapter.notifyDataSetChanged();
@@ -155,11 +149,9 @@ public class RecycleBinFragment extends Fragment {
         if(item.getItemId() == R.id.taskDeleteMenu){
             AdapterView.AdapterContextMenuInfo contextMenuInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
             int selectedPos = contextMenuInfo.position;
-            Task task = TaskTable.getTask(adapter.getItemId(selectedPos));
-            task.setStatus(TaskStatus.destroyed);
-            TaskTable.update(task);
+            TaskTable.deleteById(adapter.getItemId(selectedPos));
             adapter.notifyDataSetChanged();
-            Toast toast = Toast.makeText(getContext(), "Deleted Task", Toast.LENGTH_SHORT);
+            Toast toast = Toast.makeText(getContext(), "Cleared Task", Toast.LENGTH_SHORT);
             toast.show();
         }
         if(item.getItemId() == R.id.taskPendingMenu){

@@ -185,8 +185,13 @@ public class TaskTable {
 
 
     public static boolean deleteById(long id){
-        return writeabledB.delete(TABLE_NAME, ID + "=" + id, null) > 0;
+        return delete(ID, String.valueOf(id));
     }
+
+    public static boolean delete(String attrName, String attrValue){
+        return writeabledB.delete(TABLE_NAME, attrName + "= '" + attrValue + "'", null) > 0;
+    }
+
 
 
     private static String getDateString(String timeStamp){
@@ -235,8 +240,8 @@ public class TaskTable {
                 appendWhere(whereClause),
                 null
         );
-
-
     }
+
+
 
 }

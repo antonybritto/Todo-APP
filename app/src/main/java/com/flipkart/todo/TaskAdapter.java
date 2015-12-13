@@ -100,7 +100,11 @@ public class TaskAdapter extends BaseAdapter {
                             switch (which) {
                                 case DialogInterface.BUTTON_POSITIVE:
                                     task.setStatus(checkBoxActionStatus);
-                                    TaskTable.update(task);
+                                    if (checkBoxActionStatus.name().equals(TaskStatus.destroyed.name())) {
+                                        TaskTable.deleteById(Long.valueOf(task.getId()));
+                                    } else {
+                                        TaskTable.update(task);
+                                    }
                                     checkedTextView.setChecked(false);
                                     notifyDataSetChanged();
                                     break;
