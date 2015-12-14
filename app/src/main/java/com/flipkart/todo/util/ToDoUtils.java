@@ -16,6 +16,16 @@ import java.util.Date;
  */
 public class ToDoUtils {
 
+
+    public static String SORT_ATTR = "SORT_ATTR";
+    public static String SORT_ORDER_BY = "SORT_ORDER_BY";
+    public static String STATUS = "STATUS";
+    public static String CURRENT_POSITION = "CurrentPosition";
+    public static String TASK = "TASK";
+    public static String IS_DETAIL_VIEW = "IS_DETAIL_VIEW";
+
+
+
     public static String getDateString(Date timeStamp){
 
         StringBuilder stringBuilder = new StringBuilder();
@@ -72,5 +82,7 @@ public class ToDoUtils {
             }
         });
     }
+
+
 
 }

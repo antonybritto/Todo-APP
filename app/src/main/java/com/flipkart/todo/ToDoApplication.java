@@ -11,11 +11,13 @@ import com.flipkart.todo.model.DBAdapter;
 public class ToDoApplication extends Application {
 
     DBAdapter dbAdapter;
-
+    ServiceSchedular serviceSchedular;
     @Override
     public void onCreate() {
         super.onCreate();
         Log.i("ToDoApplication", "application started");
         dbAdapter = new DBAdapter(getApplicationContext());
+        serviceSchedular = new ServiceSchedular(getApplicationContext());
+        serviceSchedular.startReporting();
     }
 }

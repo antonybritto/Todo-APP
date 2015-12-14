@@ -21,6 +21,7 @@ import com.flipkart.todo.R;
 import com.flipkart.todo.Task;
 import com.flipkart.todo.TaskStatus;
 import com.flipkart.todo.model.TaskTable;
+import com.flipkart.todo.util.ToDoUtils;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -112,8 +113,6 @@ public class AddFragment extends Fragment {
         View fragmentview = inflater.inflate(R.layout.fragment_add, container, false);
         addBtn = (Button) fragmentview.findViewById(R.id.add);
         cancelBtn = (Button) fragmentview.findViewById(R.id.cancel);
-        deleteBtn = (Button) fragmentview.findViewById(R.id.delete);
-        deleteBtn.setVisibility(View.INVISIBLE);
         title = (EditText) fragmentview.findViewById(R.id.title);
         notes = (EditText) fragmentview.findViewById(R.id.notes);
         priority = (Spinner) fragmentview.findViewById(R.id.priority);
@@ -200,6 +199,11 @@ public class AddFragment extends Fragment {
                         false);
         }
         return null;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
     }
 
 }

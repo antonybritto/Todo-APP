@@ -1,5 +1,6 @@
 package com.flipkart.todo.Activity;
 
+import android.content.IntentFilter;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.FragmentManager;
@@ -35,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
         if(savedInstanceState == null) {
             loadListFragment();
         }
+
     }
 
     private void loadListFragment() {
@@ -121,9 +123,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void moveToTopPage(){
-        while(getSupportFragmentManager().popBackStackImmediate()){
 
-        }
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
     }
 }

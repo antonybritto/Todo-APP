@@ -1,6 +1,5 @@
 package com.flipkart.todo.Fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.ContextMenu;
@@ -14,16 +13,12 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.flipkart.todo.Activity.MainActivity;
-import com.flipkart.todo.Activity.TaskDetailActivity;
 import com.flipkart.todo.OrderBy;
 import com.flipkart.todo.R;
 import com.flipkart.todo.Task;
 import com.flipkart.todo.TaskAdapter;
-import com.flipkart.todo.TaskFragmentList;
 import com.flipkart.todo.TaskStatus;
 import com.flipkart.todo.model.TaskTable;
 import com.flipkart.todo.util.ToDoUtils;
@@ -38,7 +33,7 @@ public class RecycleBinFragment extends Fragment {
     TaskAdapter adapter;
     Spinner sortSpinner;
     HashMap<String, OrderBy> sortOrder = new HashMap<>();
-    HashMap<String, String> attributeValirPair = new HashMap<>();
+    HashMap<String, String> attributeValuePair = new HashMap<>();
 
     @Override
     public void onResume() {
@@ -55,8 +50,8 @@ public class RecycleBinFragment extends Fragment {
         taskList = (ListView) fragmentView.findViewById(R.id.listView);
         sortSpinner = (Spinner) fragmentView.findViewById(R.id.sortSpinner);
         sortOrder.put(TaskTable.DUE_DATE, OrderBy.DESC);
-        attributeValirPair.put(TaskTable.STATUS, TaskStatus.deleted.name());
-        final Integer total = TaskTable.getCount(attributeValirPair);
+        attributeValuePair.put(TaskTable.STATUS, TaskStatus.deleted.name());
+        final Integer total = TaskTable.getCount(attributeValuePair);
         RelativeLayout layout = (RelativeLayout) fragmentView.findViewById(R.id.taskListLayout);
         // if no tasks then show
         if(total == 0) {
@@ -71,7 +66,7 @@ public class RecycleBinFragment extends Fragment {
 //                intent.putExtra("CurrentPosition", position);
 //                intent.putExtra("SORT_ATTR", adapter.getSortPriority().entrySet().iterator().next().getKey());
 //                intent.putExtra("SORT_ORDER_BY", adapter.getSortPriority().entrySet().iterator().next().getValue().name());
-//                intent.putExtra("STATUS", attributeValirPair.get(TaskTable.STATUS));
+//                intent.putExtra("STATUS", attributeValuePair.get(TaskTable.STATUS));
 //                startActivity(intent);
 //            }
 //        });
@@ -113,7 +108,7 @@ public class RecycleBinFragment extends Fragment {
         });
 
 //        ToDoUtils.setSpinnerOnClickListener(sortSpinner, adapter);
-        adapter = new TaskAdapter(getContext(), sortOrder, attributeValirPair);
+        adapter = new TaskAdapter(getContext(), sortOrder, attributeValuePair);
         adapter.setCheckBoxActionStatus(TaskStatus.destroyed);
         taskList.setAdapter(adapter);
         registerForContextMenu(taskList);
@@ -165,5 +160,15 @@ public class RecycleBinFragment extends Fragment {
             toast.show();
         }
         return super.onContextItemSelected(item);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (adapter != null) {
+            outState.putString(ToDoUtils.SORT_ATTR, adapter.getSortPriority().entrySet().iterator().next().getKey());
+            outState.putString(ToDoUtils.SORT_ORDER_BY, adapter.getSortPriority().entrySet().iterator().next().getValue().name());
+            outState.putString(ToDoUtils.STATUS, attributeValuePair.get(TaskTable.STATUS));
+        }
     }
 }

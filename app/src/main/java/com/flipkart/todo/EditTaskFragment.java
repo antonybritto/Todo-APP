@@ -7,6 +7,9 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -16,10 +19,12 @@ import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.flipkart.todo.Activity.MainActivity;
 import com.flipkart.todo.R;
 import com.flipkart.todo.Task;
 import com.flipkart.todo.TaskStatus;
 import com.flipkart.todo.model.TaskTable;
+import com.flipkart.todo.util.ToDoUtils;
 
 import java.util.Arrays;
 import java.util.Calendar;
@@ -48,7 +53,6 @@ public class EditTaskFragment extends Fragment {
 
     Button addBtn;
     Button cancelBtn;
-    Button deleteBtn;
     EditText dueDate;
     EditText dueTime;
     Date dueDateTime;
@@ -136,15 +140,19 @@ public class EditTaskFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        setHasOptionsMenu(true);
         View fragmentview = inflater.inflate(R.layout.fragment_add, container, false);
         addBtn = (Button) fragmentview.findViewById(R.id.add);
         addBtn.setText("Edit Task");
         cancelBtn = (Button) fragmentview.findViewById(R.id.cancel);
-        deleteBtn = (Button) fragmentview.findViewById(R.id.delete);
 
+        if(savedInstanceState != null){
+            task = savedInstanceState.getParcelable(ToDoUtils.TASK);
+            isDetailView = savedInstanceState.getBoolean(ToDoUtils.IS_DETAIL_VIEW);
+
+        }
         if(isDetailView) {
             cancelBtn.setVisibility(View.INVISIBLE);
-            deleteBtn.setVisibility(View.INVISIBLE);
         }
 
         title = (EditText) fragmentview.findViewById(R.id.title);
@@ -156,6 +164,8 @@ public class EditTaskFragment extends Fragment {
         if (priorityList == null) {
             priorityList = Arrays.asList((getResources().getStringArray(R.array.priority)));
         }
+
+
         title.setText(task.getTitle());
         notes.setText(task.getNotes());
         priority.setSelection(priorityList.indexOf(task.getPriority()));
@@ -218,17 +228,6 @@ public class EditTaskFragment extends Fragment {
                 manager.popBackStack();
             }
         });
-        deleteBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                task.setStatus(TaskStatus.deleted);
-                TaskTable.update(task);
-                Toast toast = Toast.makeText(getContext(), "Task Deleted", Toast.LENGTH_SHORT);
-                toast.show();
-                android.support.v4.app.FragmentManager manager = getFragmentManager();
-                manager.popBackStack();
-            }
-        });
         return fragmentview;
     }
 
@@ -246,6 +245,35 @@ public class EditTaskFragment extends Fragment {
                         false);
         }
         return null;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        if (!isDetailView) {
+            MenuItem menuItem = menu.add("DELETE");
+            Log.i(TAG, "menu item created");
+            menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+            menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    task.setStatus(TaskStatus.deleted);
+                    TaskTable.update(task);
+                    Toast toast = Toast.makeText(getContext(), "Task Deleted", Toast.LENGTH_SHORT);
+                    toast.show();
+                    android.support.v4.app.FragmentManager manager = getFragmentManager();
+                    manager.popBackStack();
+                    return true;
+                }
+            });
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(ToDoUtils.TASK, task);
+        outState.putBoolean(ToDoUtils.IS_DETAIL_VIEW, isDetailView);
+
     }
 
 }

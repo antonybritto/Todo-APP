@@ -22,8 +22,8 @@ import java.util.Map;
  */
 public class TaskAdapter extends BaseAdapter {
     Context context;
-    Map<String, OrderBy> sortPriority = null;
-    Map<String, String> attributeValuePair = null;
+    Map<String, OrderBy> sortPriority = new HashMap<String, OrderBy>();
+    Map<String, String> attributeValuePair = new HashMap<String, String>();
 
     public TaskStatus getCheckBoxActionStatus() {
         return checkBoxActionStatus;

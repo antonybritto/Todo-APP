@@ -7,12 +7,14 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 
 import com.flipkart.todo.EditTaskFragment;
 import com.flipkart.todo.OrderBy;
 import com.flipkart.todo.R;
 import com.flipkart.todo.Task;
 import com.flipkart.todo.model.TaskTable;
+import com.flipkart.todo.util.ToDoUtils;
 
 import java.util.HashMap;
 
@@ -26,6 +28,7 @@ public class TaskDetailActivity  extends AppCompatActivity {
     FragmentStatePagerAdapter adapter;
     HashMap<String, OrderBy> sortOrder = new HashMap<>();
     HashMap<String, String> attributeValuePair = new HashMap<>();
+    int currentPosition = 0 ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,9 +39,7 @@ public class TaskDetailActivity  extends AppCompatActivity {
 //
         Intent launchingIntent = getIntent();
 
-        sortOrder.put(launchingIntent.getStringExtra("SORT_ATTR"),
-                OrderBy.valueOf(launchingIntent.getStringExtra("SORT_ORDER_BY")));
-        attributeValuePair.put(TaskTable.STATUS, launchingIntent.getStringExtra("STATUS"));
+
 
         viewPager = (ViewPager) findViewById(R.id.viewPager);
 
@@ -67,14 +68,37 @@ public class TaskDetailActivity  extends AppCompatActivity {
         };
 //
         viewPager.setAdapter(adapter);
-        viewPager.setCurrentItem(launchingIntent.getIntExtra("CurrentPosition", 0));
 
+        if (savedInstanceState == null) {
+            sortOrder.put(launchingIntent.getStringExtra(ToDoUtils.SORT_ATTR),
+                    OrderBy.valueOf(launchingIntent.getStringExtra(ToDoUtils.SORT_ORDER_BY)));
+            attributeValuePair.put(TaskTable.STATUS, launchingIntent.getStringExtra(ToDoUtils.STATUS));
+            currentPosition = launchingIntent.getIntExtra(ToDoUtils.CURRENT_POSITION, 0);
+        } else {
+            sortOrder.put(savedInstanceState.getString(ToDoUtils.SORT_ATTR),
+                    OrderBy.valueOf(savedInstanceState.getString(ToDoUtils.SORT_ORDER_BY)));
+            attributeValuePair.put(TaskTable.STATUS, savedInstanceState.getString(ToDoUtils.STATUS));
+            currentPosition = savedInstanceState.getInt(ToDoUtils.CURRENT_POSITION, 0);
+        }
+        viewPager.setCurrentItem(currentPosition);
 
     }
+
 
     @Override
     protected void onResume() {
         super.onResume();
         adapter.notifyDataSetChanged();
+    }
+
+
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(ToDoUtils.CURRENT_POSITION, currentPosition);
+        outState.putString(ToDoUtils.SORT_ATTR, sortOrder.entrySet().iterator().next().getKey());
+        outState.putString(ToDoUtils.SORT_ORDER_BY, sortOrder.entrySet().iterator().next().getValue().name());
+        outState.putString(ToDoUtils.STATUS, attributeValuePair.get(TaskTable.STATUS));
     }
 }
