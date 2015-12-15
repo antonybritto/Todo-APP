@@ -3,6 +3,7 @@ package com.flipkart.todo;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -201,6 +202,9 @@ public class EditTaskFragment extends Fragment {
                 if (!isDetailView) {
                     android.support.v4.app.FragmentManager manager = getFragmentManager();
                     manager.popBackStack();
+                } else {
+                    Intent intent = new Intent(getActivity(), MainActivity.class);
+                    startActivityForResult(intent, 102);
                 }
             }
         });
@@ -209,6 +213,8 @@ public class EditTaskFragment extends Fragment {
                                              public void onFocusChange(View v, boolean hasFocus) {
                                                  if (hasFocus) {
                                                      showDialog(DATE_DIALOG_ID).show();
+                                                     v.setEnabled(false);
+                                                     v.setEnabled(true);
                                                  }
                                              }
                                          }
@@ -218,6 +224,8 @@ public class EditTaskFragment extends Fragment {
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
                     showDialog(TIME_DIALOG_ID).show();
+                    v.setEnabled(false);
+                    v.setEnabled(true);
                 }
             }
         });

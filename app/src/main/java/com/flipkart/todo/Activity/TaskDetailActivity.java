@@ -7,6 +7,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
@@ -14,6 +16,7 @@ import com.flipkart.todo.EditTaskFragment;
 import com.flipkart.todo.OrderBy;
 import com.flipkart.todo.R;
 import com.flipkart.todo.Task;
+import com.flipkart.todo.TaskFragmentList;
 import com.flipkart.todo.model.TaskTable;
 import com.flipkart.todo.util.ToDoUtils;
 
@@ -30,6 +33,7 @@ public class TaskDetailActivity  extends AppCompatActivity {
     HashMap<String, OrderBy> sortOrder = new HashMap<>();
     HashMap<String, String> attributeValuePair = new HashMap<>();
     int currentPosition = 0 ;
+    MenuItem menuItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,4 +109,24 @@ public class TaskDetailActivity  extends AppCompatActivity {
         outState.putString(ToDoUtils.SORT_ORDER_BY, sortOrder.entrySet().iterator().next().getValue().name());
         outState.putString(ToDoUtils.STATUS, attributeValuePair.get(TaskTable.STATUS));
     }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        menuItem = menu.add("HOME");
+        menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivityForResult(intent, 102);
+
+                return true;
+            }
+        });
+        return  false;
+    }
+
+
 }

@@ -166,6 +166,8 @@ public class AddFragment extends Fragment {
                                              public void onFocusChange(View v, boolean hasFocus) {
                                                  if (hasFocus) {
                                                      showDialog(DATE_DIALOG_ID).show();
+                                                     v.setEnabled(false);
+                                                     v.setEnabled(true);
                                                  }
                                              }
                                          }
@@ -176,6 +178,8 @@ public class AddFragment extends Fragment {
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
                     showDialog(TIME_DIALOG_ID).show();
+                    v.setEnabled(false);
+                    v.setEnabled(true);
                 }
             }
         });
