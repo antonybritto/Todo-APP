@@ -11,14 +11,14 @@
         android:checkMark="?android:attr/listChoiceIndicatorMultiple"
         android:clickable="true"
         android:textAlignment="center"
+        android:gravity="center"
         android:id="@+id/checkBox"
         />
-
-
+    
     <TextView
         android:layout_width="150dp"
         android:layout_height="70dp"
-        android:text=""
+        android:gravity="center"
         android:textAlignment="center"
         android:id="@+id/title" />
 
@@ -26,7 +26,7 @@
     <TextView
         android:layout_width="50dp"
         android:layout_height="70dp"
-        android:text=""
+        android:gravity="center"
         android:textAlignment="center"
         android:id="@+id/priority" />
 
@@ -35,7 +35,7 @@
         android:layout_width="130dp"
         android:layout_height="70dp"
         android:textAlignment="center"
-        android:text=""
+        android:gravity="center"
         android:id="@+id/duedate" />
 
 </LinearLayout>
