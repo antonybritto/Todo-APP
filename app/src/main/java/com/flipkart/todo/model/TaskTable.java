@@ -73,23 +73,6 @@ public class TaskTable {
         }
     }
 
-    public static List<Task> getTaskList(){
-
-        List<Task> tasks = new ArrayList<Task>();
-        Cursor cursor = readabledB.query(TABLE_NAME, null, //columns needed
-                null, // coulmns(where)
-                null,
-                null,
-                null,
-                null
-        );
-        if (cursor != null && cursor.moveToFirst()) {
-            do {
-                tasks.add(populateTasks(cursor));
-            } while (cursor.moveToNext());
-        }
-        return tasks;
-    }
 
     private static Task populateTasks(Cursor cursor){
         Task task = null;
@@ -192,20 +175,6 @@ public class TaskTable {
         return writeabledB.delete(TABLE_NAME, attrName + "= '" + attrValue + "'", null) > 0;
     }
 
-
-
-    private static String getDateString(String timeStamp){
-
-        StringBuilder stringBuilder = new StringBuilder();
-        if(timeStamp != null && !timeStamp.isEmpty()) {
-            Date date = new java.sql.Date(Long.valueOf(timeStamp));
-            stringBuilder
-                    .append(date.getDate()).append("/")
-                    .append(date.getMonth() + 1).append("/")
-                    .append(date.getYear()).append(" ").toString();
-        }
-        return stringBuilder.toString();
-    }
 
 
     public static int update(final Task task) {
