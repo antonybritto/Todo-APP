@@ -6,10 +6,11 @@
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="wrap_content"
         android:text="Settings"
         android:textAlignment="center"
         android:textSize="35dp"
+        android:layout_marginTop="10dp"
 
         />
 
@@ -18,9 +19,10 @@
         android:layout_height="50dp"
         android:text="Delete the completed tasks"
         android:id="@+id/deleteCompletedTasks"
-        android:textSize="25dp"
+        android:textSize="20dp"
         android:checkMark="?android:attr/listChoiceIndicatorMultiple"
         android:clickable="true"
+        android:gravity="center"
         android:textAlignment="center"
         android:layout_weight="0.08" />
 
@@ -28,9 +30,10 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:text="Clear the completed tasks"
-        android:textSize="25dp"
+        android:textSize="20dp"
         android:checkMark="?android:attr/listChoiceIndicatorMultiple"
         android:clickable="true"
+        android:gravity="center"
         android:textAlignment="center"
         android:id="@+id/clearCompletedTasks"
         android:layout_weight="0.08" />
@@ -38,11 +41,12 @@
     <CheckedTextView
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:textSize="25dp"
+        android:textSize="20dp"
         android:text="Clear Recycle Bin"
         android:id="@+id/clearRecycleBin"
         android:checkMark="?android:attr/listChoiceIndicatorMultiple"
         android:clickable="true"
+        android:gravity="center"
         android:textAlignment="center"
         android:layout_weight="0.08" />
 
