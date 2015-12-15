@@ -55,7 +55,7 @@ public class EditTaskFragment extends Fragment {
     Button cancelBtn;
     EditText dueDate;
     EditText dueTime;
-    Date dueDateTime;
+    Calendar dueDateTime =  Calendar.getInstance();
     static final int DATE_DIALOG_ID = 0;
     static final int TIME_DIALOG_ID = 1;
     private int pYear;
@@ -108,9 +108,9 @@ public class EditTaskFragment extends Fragment {
                         .append(pMonth + 1).append("/")
                         .append(pYear).append(" "));
 
-        dueDateTime.setDate(pDay);
-        dueDateTime.setMonth(pMonth);
-        dueDateTime.setYear(pYear);
+        dueDateTime.set(Calendar.DAY_OF_MONTH, pDay);
+        dueDateTime.set(Calendar.MONTH, pMonth);
+        dueDateTime.set(Calendar.YEAR, pYear);
     }
 
     private void updateTimeDisplay() {
@@ -120,9 +120,10 @@ public class EditTaskFragment extends Fragment {
                         .append(pHour).append(":")
                         .append(pMin).append(" "));
 
-        dueDateTime.setHours(pHour);
-        dueDateTime.setMinutes(pMin);
+        dueDateTime.set(Calendar.HOUR_OF_DAY, pHour);
+        dueDateTime.set(Calendar.MINUTE ,pMin);
     }
+
 
     private void displayToast() {
 
@@ -170,14 +171,13 @@ public class EditTaskFragment extends Fragment {
         notes.setText(task.getNotes());
         priority.setSelection(priorityList.indexOf(task.getPriority()));
 
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(task.getDueDate());
-        pYear = calendar.get(Calendar.YEAR);
-        pMonth = calendar.get(Calendar.MONTH);
-        pDay = calendar.get(Calendar.DAY_OF_MONTH);
-        pHour = calendar.get(Calendar.HOUR_OF_DAY);
-        pMin = calendar.get(Calendar.MINUTE);
-        dueDateTime = new Date() ;
+        dueDateTime = Calendar.getInstance();
+        dueDateTime.setTime(task.getDueDate());
+        pYear = dueDateTime.get(Calendar.YEAR);
+        pMonth = dueDateTime.get(Calendar.MONTH);
+        pDay = dueDateTime.get(Calendar.DAY_OF_MONTH);
+        pHour = dueDateTime.get(Calendar.HOUR_OF_DAY);
+        pMin = dueDateTime.get(Calendar.MINUTE);
         updateDisplay();
         updateTimeDisplay();
 
@@ -193,7 +193,7 @@ public class EditTaskFragment extends Fragment {
                 task.priority = priority.getSelectedItem().toString();
 //                task.dueDate = dueDate.getText().toString();
                 task.status = TaskStatus.pending;
-                task.dueDate = dueDateTime;
+                task.dueDate = dueDateTime.getTime();
                 Log.i(TAG, task.toString());
                 TaskTable.update(task);
                 Toast toast = Toast.makeText(getContext(), "Edited Task", Toast.LENGTH_SHORT);

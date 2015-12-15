@@ -7,6 +7,7 @@ import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +34,7 @@ import java.util.Date;
 public class AddFragment extends Fragment {
 
     EditText title = null;
+    String TAG = "AddFragment";
     EditText notes = null;
     Spinner priority = null;
     Button addBtn;
@@ -40,7 +42,7 @@ public class AddFragment extends Fragment {
     Button deleteBtn;
     EditText dueDate;
     EditText dueTime;
-    Date dueDateTime;
+    Calendar dueDateTime = Calendar.getInstance();
     static final int DATE_DIALOG_ID = 0;
     static final int TIME_DIALOG_ID = 1;
     private int pYear;
@@ -80,9 +82,9 @@ public class AddFragment extends Fragment {
                         .append(pMonth + 1).append("/")
                         .append(pYear).append(" "));
 
-        dueDateTime.setDate(pDay);
-        dueDateTime.setMonth(pMonth);
-        dueDateTime.setYear(pYear);
+        dueDateTime.set(Calendar.DAY_OF_MONTH, pDay);
+        dueDateTime.set(Calendar.MONTH, pMonth);
+        dueDateTime.set(Calendar.YEAR, pYear);
     }
 
     private void updateTimeDisplay() {
@@ -92,8 +94,8 @@ public class AddFragment extends Fragment {
                         .append(pHour).append(":")
                         .append(pMin).append(" "));
 
-        dueDateTime.setHours(pHour);
-        dueDateTime.setMinutes(pMin);
+        dueDateTime.set(Calendar.HOUR_OF_DAY, pHour);
+        dueDateTime.set(Calendar.MINUTE ,pMin);
     }
 
 
@@ -121,9 +123,11 @@ public class AddFragment extends Fragment {
 
         /** Get the current date */
         final Calendar cal = Calendar.getInstance();
+        Log.i(TAG, String.valueOf(cal.get(Calendar.YEAR)));
         pYear = cal.get(Calendar.YEAR);
         pMonth = cal.get(Calendar.MONTH);
         pDay = cal.get(Calendar.DAY_OF_MONTH);
+
 
         pHour = cal.get(Calendar.HOUR_OF_DAY);
         pMin = cal.get(Calendar.MINUTE);
@@ -131,7 +135,7 @@ public class AddFragment extends Fragment {
 
 
         /** Display the current date in the TextView */
-        dueDateTime = new Date() ;
+        dueDateTime = Calendar.getInstance();
         updateDisplay();
         updateTimeDisplay();
 
@@ -149,7 +153,7 @@ public class AddFragment extends Fragment {
                 task.priority = priority.getSelectedItem().toString();
 //                task.dueDate = dueDate.getText().toString();
                 task.status = TaskStatus.pending;
-                task.dueDate = dueDateTime;
+                task.dueDate = dueDateTime.getTime();
                 TaskTable.insert(task);
                 Toast toast = Toast.makeText(getContext(), "Added New Task", Toast.LENGTH_SHORT);
                 toast.show();

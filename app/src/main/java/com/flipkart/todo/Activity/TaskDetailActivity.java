@@ -1,5 +1,6 @@
 package com.flipkart.todo.Activity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -35,6 +36,7 @@ public class TaskDetailActivity  extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
 
+
         setContentView(R.layout.task_detail);
 //
         Intent launchingIntent = getIntent();
@@ -42,6 +44,7 @@ public class TaskDetailActivity  extends AppCompatActivity {
 
 
         viewPager = (ViewPager) findViewById(R.id.viewPager);
+        viewPager.setOffscreenPageLimit(5);
 
 //
 //
@@ -52,6 +55,7 @@ public class TaskDetailActivity  extends AppCompatActivity {
                 editTaskFragment.setIsDetailView(true);
                 Task task = TaskTable.getTask(position, sortOrder, attributeValuePair);
                 editTaskFragment.setTask(task);
+
                 return editTaskFragment;
             }
 
