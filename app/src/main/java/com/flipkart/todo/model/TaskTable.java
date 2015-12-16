@@ -126,7 +126,9 @@ public class TaskTable {
                 null,
                 null
         );
-        return cursor.getCount();
+        int count = cursor.getCount();
+        cursor.close();
+        return count;
     }
 
 
@@ -142,6 +144,7 @@ public class TaskTable {
         if (cursor.moveToPosition(position)) {
             task  = populateTasks(cursor);
         }
+        cursor.close();
         return task;
 
     }
@@ -161,6 +164,7 @@ public class TaskTable {
         if (cursor.moveToFirst()) {
             task  = populateTasks(cursor);
         }
+        cursor.close();
         return task;
 
     }
